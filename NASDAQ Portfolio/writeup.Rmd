@@ -1,0 +1,64 @@
+---
+title: "Portfolio Efficient Frontier -- Group 15"
+author: "Garrett Stephens, Sabrina Rodriguez, Mikayla Williams, Jeffri Behrens"
+date: "12/10/2022"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+## Portfolio Efficient Frontier
+
+Below is the Efficient Frontier based on the returns of Nasdaq listed stocks 
+from January 2000 to December 2009. The graph depicts the frontier from a 4% 
+to a 7.9% expected portfolio return.
+
+```{r pressure0, message=FALSE, echo=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+library(RMySQL)
+library(knitr)
+library(ggplot2)
+```
+
+```{r pressure1, echo=FALSE}
+
+con <- dbConnect(RMySQL::MySQL(), dbname='nasdaq',
+                 username='root',password='root')
+# dbListTables(con)
+
+query <- paste0("select * from portfolio; ")
+
+runquery <- dbSendQuery(con,query)
+df <- fetch(runquery, n=-1)
+
+# dbDisconnect(con)
+
+x <- df[1]
+y <- df[2]
+
+ggplot() +
+  geom_line(data=df,mapping=aes(x=expRisk,y=expReturn),color='red')+
+  geom_line(data=df,mapping=aes(x=expRisk,y=expReturn),color='red')+
+  labs(x='Portfolio Expected Risk',y='Portfolio Expected Return',title = 'Portfolio Efficient Frontier')
+```
+** The Expected Return is in percentage ( % ) units; The Expected Risk is the Portfolio Standard Deviation. 
+
+## Commentary
+
+The Efficient Frontier visualizes the potential return someone can expect given
+their risk tolerance. As one's risk tolerance increases, so does their 
+expected return -- greater risk exposes you to greater reward (or loss) as these
+stock are much more volatile. A portfolio above this line is impossible because 
+the efficient frontier and the area below it represents the feasible region of 
+stock compositions. An investor would desire to be along the efficient line
+because a portfolio that experiences the same risk but is far from the line can 
+be achieving greater returns. 
+
+## Data Points of the Efficient Frontier
+
+The Points of the above graph is available below.
+
+```{r pressure2, echo=FALSE}
+df
+```
